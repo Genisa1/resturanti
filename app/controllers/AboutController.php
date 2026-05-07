@@ -6,7 +6,7 @@ class AboutController {
 
     public function __construct($db) {
         $this->db = $db;
-        require_once 'models/Page.php';
+        require_once 'app/models/Page.php';
         $this->pageModel = new Page($db);
     }
 
@@ -16,6 +16,6 @@ class AboutController {
     public function index() {
         $page = $this->pageModel->getBySlug('about');
 
-        require_once 'views/about.php';
+        require_once 'app/views/about.php';
     }
 }

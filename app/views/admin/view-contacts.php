@@ -4,7 +4,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 $title = 'View Messages - Admin';
-include 'views/layout/header.php';
+include 'app/views/layout/header.php';
 ?>
 
 <section class="admin-section">
@@ -12,6 +12,7 @@ include 'views/layout/header.php';
         <h2>Admin Menu</h2>
         <ul>
             <li><a href="?page=admin&action=dashboard">Dashboard</a></li>
+            <li><a href="?page=admin&action=manageUsers">Users</a></li>
             <li><a href="?page=admin&action=manageProducts">Products</a></li>
             <li><a href="?page=admin&action=manageNews">News</a></li>
             <li><a href="?page=admin&action=managePages">Pages</a></li>
@@ -22,6 +23,28 @@ include 'views/layout/header.php';
     <div class="admin-content">
         <h1>Contact Messages</h1>
         
+        <?php if (isset($contactDetail) && $contactDetail): ?>
+            <div class="form-wrapper">
+                <h2>Message from <?php echo htmlspecialchars($contactDetail['name']); ?></h2>
+                <div class="form-group">
+                    <label>Email</label>
+                    <p><?php echo htmlspecialchars($contactDetail['email']); ?></p>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <p><?php echo ucfirst($contactDetail['status']); ?></p>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <p><?php echo nl2br(htmlspecialchars($contactDetail['message'])); ?></p>
+                </div>
+                <div class="form-actions">
+                    <a href="?page=admin&action=viewContacts" class="btn">Back to messages</a>
+                    <a href="?page=admin&action=viewContacts&task=delete&id=<?php echo $contactDetail['id']; ?>" class="btn btn-danger" onclick="return confirm('Delete this message?');">Delete</a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <table class="admin-table">
             <thead>
                 <tr>
@@ -43,8 +66,8 @@ include 'views/layout/header.php';
                             <td><span class="status-badge status-<?php echo $contact['status']; ?>"><?php echo ucfirst($contact['status']); ?></span></td>
                             <td><?php echo date('M d, Y', strtotime($contact['created_at'])); ?></td>
                             <td>
-                                <a href="?page=admin&action=viewContactDetail&id=<?php echo $contact['id']; ?>" class="btn-small">View</a>
-                                <a href="?page=admin&action=deleteContact&id=<?php echo $contact['id']; ?>" class="btn-small btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                                <a href="?page=admin&action=viewContacts&task=view&id=<?php echo $contact['id']; ?>" class="btn-small">View</a>
+                                <a href="?page=admin&action=viewContacts&task=delete&id=<?php echo $contact['id']; ?>" class="btn-small btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -58,4 +81,4 @@ include 'views/layout/header.php';
     </div>
 </section>
 
-<?php include 'views/layout/footer.php'; ?>
+<?php include 'app/views/layout/footer.php'; ?>

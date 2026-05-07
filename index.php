@@ -26,19 +26,19 @@ $id = $_GET['id'] ?? null;
 // Route to appropriate controller
 switch ($page) {
     case 'home':
-        require_once 'controllers/HomeController.php';
+        require_once 'app/controllers/HomeController.php';
         $controller = new HomeController($db);
         $controller->index();
         break;
 
     case 'about':
-        require_once 'controllers/AboutController.php';
+        require_once 'app/controllers/AboutController.php';
         $controller = new AboutController($db);
         $controller->index();
         break;
 
     case 'products':
-        require_once 'controllers/ProductController.php';
+        require_once 'app/controllers/ProductController.php';
         $controller = new ProductController($db);
         
         if ($id) {
@@ -49,7 +49,7 @@ switch ($page) {
         break;
 
     case 'news':
-        require_once 'controllers/NewsController.php';
+        require_once 'app/controllers/NewsController.php';
         $controller = new NewsController($db);
         
         if ($id) {
@@ -60,7 +60,7 @@ switch ($page) {
         break;
 
     case 'contact':
-        require_once 'controllers/ContactController.php';
+        require_once 'app/controllers/ContactController.php';
         $controller = new ContactController($db);
         
         if ($_POST && isset($_POST['name'])) {
@@ -71,7 +71,7 @@ switch ($page) {
         break;
 
     case 'admin':
-        require_once 'controllers/AdminController.php';
+        require_once 'app/controllers/AdminController.php';
         
         $action = $_GET['action'] ?? 'dashboard';
         
@@ -88,6 +88,9 @@ switch ($page) {
                 case 'managePages':
                     $controller->managePages();
                     break;
+                case 'manageUsers':
+                    $controller->manageUsers();
+                    break;
                 case 'viewContacts':
                     $controller->viewContacts();
                     break;
@@ -102,9 +105,15 @@ switch ($page) {
         break;
 
     case 'login':
-        require_once 'controllers/AuthController.php';
+        require_once 'app/controllers/AuthController.php';
         $controller = new AuthController($db);
         $controller->login();
+        break;
+
+    case 'register':
+        require_once 'app/controllers/AuthController.php';
+        $controller = new AuthController($db);
+        $controller->register();
         break;
 
     case 'logout':

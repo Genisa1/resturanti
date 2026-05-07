@@ -8,9 +8,9 @@ class HomeController {
 
     public function __construct($db) {
         $this->db = $db;
-        require_once 'models/News.php';
-        require_once 'models/Product.php';
-        require_once 'models/Page.php';
+        require_once 'app/models/News.php';
+        require_once 'app/models/Product.php';
+        require_once 'app/models/Page.php';
         
         $this->newsModel = new News($db);
         $this->productModel = new Product($db);
@@ -25,6 +25,6 @@ class HomeController {
         $latestNews = $this->newsModel->getLatest(3);
         $featuredProducts = $this->productModel->getAll();
 
-        require_once 'views/home.php';
+        require_once 'app/views/home.php';
     }
 }

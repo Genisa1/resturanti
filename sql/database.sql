@@ -62,7 +62,7 @@ CREATE TABLE pages (
 
 -- Insert Default Admin User (password: admin123 - hashed with password_hash)
 INSERT INTO users (name, email, password, role) VALUES 
-('Admin User', 'admin@example.com', '$2y$10$W8Z8LJ7O7X9Z7X7X7X7X7eW8Z8LJ7O7X9Z7X7X7X7X7X7eW8Z8LJ7O', 'admin');
+('Admin User', 'admin@example.com', '$2y$10$GaFFRcGCW7uecbXLkqDXbevhEE0xHQTEriBwwQblR7pHOZav/5222', 'admin');
 
 -- Insert Sample Pages
 INSERT INTO pages (title, slug, content, created_by) VALUES 

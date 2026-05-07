@@ -6,7 +6,7 @@ class ContactController {
 
     public function __construct($db) {
         $this->db = $db;
-        require_once 'models/Contact.php';
+        require_once 'app/models/Contact.php';
         $this->contactModel = new Contact($db);
     }
 
@@ -14,7 +14,7 @@ class ContactController {
      * Display contact form
      */
     public function index() {
-        require_once 'views/contact.php';
+        require_once 'app/views/contact.php';
     }
 
     /**

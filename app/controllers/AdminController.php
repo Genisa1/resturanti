@@ -10,11 +10,11 @@ class AdminController {
 
     public function __construct($db) {
         $this->db = $db;
-        require_once 'models/User.php';
-        require_once 'models/Product.php';
-        require_once 'models/News.php';
-        require_once 'models/Page.php';
-        require_once 'models/Contact.php';
+        require_once 'app/models/User.php';
+        require_once 'app/models/Product.php';
+        require_once 'app/models/News.php';
+        require_once 'app/models/Page.php';
+        require_once 'app/models/Contact.php';
 
         $this->userModel = new User($db);
         $this->productModel = new Product($db);
@@ -33,25 +33,30 @@ class AdminController {
      * Display admin dashboard
      */
     public function dashboard() {
-        require_once 'views/admin/dashboard.php';
+        require_once 'app/views/admin/dashboard.php';
     }
 
     /**
      * Manage products
      */
     public function manageProducts() {
-        $action = $_GET['action'] ?? 'list';
+        $task = $_GET['task'] ?? 'list';
         $products = $this->productModel->getAll();
+        $product = null;
 
-        if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($task === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->addProduct();
-        } elseif ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        } elseif ($task === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->updateProduct($_GET['id'] ?? 0);
-        } elseif ($action === 'delete') {
+        } elseif ($task === 'delete') {
             $this->deleteProduct($_GET['id'] ?? 0);
         }
 
-        require_once 'views/admin/manage-products.php';
+        if ($task === 'edit' && isset($_GET['id'])) {
+            $product = $this->productModel->getById($_GET['id']);
+        }
+
+        require_once 'app/views/admin/manage-products.php';
     }
 
     /**
@@ -85,8 +90,11 @@ class AdminController {
      * Update product
      */
     private function updateProduct($id) {
+        $existingProduct = $this->productModel->getById($id);
         $this->productModel->title = htmlspecialchars($_POST['title'] ?? '');
         $this->productModel->description = $_POST['description'] ?? '';
+        $this->productModel->image = $existingProduct['image'] ?? null;
+        $this->productModel->pdf = $existingProduct['pdf'] ?? null;
 
         // Handle file uploads
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
@@ -125,18 +133,23 @@ class AdminController {
      * Manage news
      */
     public function manageNews() {
-        $action = $_GET['action'] ?? 'list';
+        $task = $_GET['task'] ?? 'list';
         $newsList = $this->newsModel->getAll();
+        $newsItem = null;
 
-        if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($task === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->addNews();
-        } elseif ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        } elseif ($task === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->updateNews($_GET['id'] ?? 0);
-        } elseif ($action === 'delete') {
+        } elseif ($task === 'delete') {
             $this->deleteNews($_GET['id'] ?? 0);
         }
 
-        require_once 'views/admin/manage-news.php';
+        if ($task === 'edit' && isset($_GET['id'])) {
+            $newsItem = $this->newsModel->getById($_GET['id']);
+        }
+
+        require_once 'app/views/admin/manage-news.php';
     }
 
     /**
@@ -165,8 +178,10 @@ class AdminController {
      * Update news
      */
     private function updateNews($id) {
+        $existingNews = $this->newsModel->getById($id);
         $this->newsModel->title = htmlspecialchars($_POST['title'] ?? '');
         $this->newsModel->content = $_POST['content'] ?? '';
+        $this->newsModel->image = $existingNews['image'] ?? null;
 
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             $this->newsModel->image = $this->uploadFile($_FILES['image']);
@@ -200,18 +215,23 @@ class AdminController {
      * Manage pages
      */
     public function managePages() {
-        $action = $_GET['action'] ?? 'list';
+        $task = $_GET['task'] ?? 'list';
         $pages = $this->pageModel->getAll();
+        $pageItem = null;
 
-        if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($task === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->addPage();
-        } elseif ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        } elseif ($task === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->updatePage($_GET['id'] ?? 0);
-        } elseif ($action === 'delete') {
+        } elseif ($task === 'delete') {
             $this->deletePage($_GET['id'] ?? 0);
         }
 
-        require_once 'views/admin/manage-pages.php';
+        if ($task === 'edit' && isset($_GET['id'])) {
+            $pageItem = $this->pageModel->getById($_GET['id']);
+        }
+
+        require_once 'app/views/admin/manage-pages.php';
     }
 
     /**
@@ -267,8 +287,101 @@ class AdminController {
      * View contacts
      */
     public function viewContacts() {
+        $task = $_GET['task'] ?? 'list';
         $contacts = $this->contactModel->getAll();
-        require_once 'views/admin/view-contacts.php';
+        $contactDetail = null;
+
+        if ($task === 'view' && isset($_GET['id'])) {
+            $contactDetail = $this->contactModel->getById($_GET['id']);
+            if ($contactDetail && $contactDetail['status'] === 'new') {
+                $this->contactModel->updateStatus($_GET['id'], 'read');
+                $contactDetail['status'] = 'read';
+                $contacts = $this->contactModel->getAll();
+            }
+        } elseif ($task === 'delete' && isset($_GET['id'])) {
+            if ($this->contactModel->delete($_GET['id'])) {
+                $_SESSION['success'] = 'Contact message deleted successfully.';
+            } else {
+                $_SESSION['error'] = 'Failed to delete contact message.';
+            }
+            header('Location: ?page=admin&action=viewContacts');
+            exit;
+        }
+
+        require_once 'app/views/admin/view-contacts.php';
+    }
+
+    /**
+     * Manage users
+     */
+    public function manageUsers() {
+        $task = $_GET['task'] ?? 'list';
+        $users = $this->userModel->getAll();
+
+        if ($task === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->addUser();
+        } elseif ($task === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->updateUser($_GET['id'] ?? 0);
+        } elseif ($task === 'delete') {
+            $this->deleteUser($_GET['id'] ?? 0);
+        }
+
+        require_once 'app/views/admin/manage-users.php';
+    }
+
+    /**
+     * Add new user
+     */
+    private function addUser() {
+        $this->userModel->name = htmlspecialchars($_POST['name'] ?? '');
+        $this->userModel->email = htmlspecialchars($_POST['email'] ?? '');
+        $this->userModel->password = $_POST['password'] ?? '';
+        $this->userModel->role = $_POST['role'] ?? 'user';
+
+        if ($this->userModel->create()) {
+            $_SESSION['success'] = 'User added successfully';
+            header('Location: ?page=admin&action=manageUsers');
+            exit;
+        } else {
+            $_SESSION['error'] = 'Failed to add user';
+        }
+    }
+
+    /**
+     * Update user
+     */
+    private function updateUser($id) {
+        $this->userModel->name = htmlspecialchars($_POST['name'] ?? '');
+        $this->userModel->email = htmlspecialchars($_POST['email'] ?? '');
+        $this->userModel->role = $_POST['role'] ?? 'user';
+
+        if ($this->userModel->update($id)) {
+            $_SESSION['success'] = 'User updated successfully';
+            header('Location: ?page=admin&action=manageUsers');
+            exit;
+        } else {
+            $_SESSION['error'] = 'Failed to update user';
+        }
+    }
+
+    /**
+     * Delete user
+     */
+    private function deleteUser($id) {
+        // Prevent deleting self
+        if ($id == $_SESSION['user_id']) {
+            $_SESSION['error'] = 'Cannot delete your own account';
+            header('Location: ?page=admin&action=manageUsers');
+            exit;
+        }
+
+        if ($this->userModel->delete($id)) {
+            $_SESSION['success'] = 'User deleted successfully';
+            header('Location: ?page=admin&action=manageUsers');
+            exit;
+        } else {
+            $_SESSION['error'] = 'Failed to delete user';
+        }
     }
 
     /**

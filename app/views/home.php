@@ -1,6 +1,6 @@
 <?php
 $title = 'Home - Our Website';
-include 'views/layout/header.php';
+include 'app/views/layout/header.php';
 ?>
 
 <section class="hero">
@@ -48,4 +48,4 @@ include 'views/layout/header.php';
     </div>
 </section>
 
-<?php include 'views/layout/footer.php'; ?>
+<?php include 'app/views/layout/footer.php'; ?>

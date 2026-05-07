@@ -1,6 +1,6 @@
 <?php
 $title = isset($newsItem) ? htmlspecialchars($newsItem['title']) . ' - Our Website' : 'News Detail';
-include 'views/layout/header.php';
+include 'app/views/layout/header.php';
 ?>
 
 <section class="page-section">
@@ -29,4 +29,4 @@ include 'views/layout/header.php';
     <?php endif; ?>
 </section>
 
-<?php include 'views/layout/footer.php'; ?>
+<?php include 'app/views/layout/footer.php'; ?>
