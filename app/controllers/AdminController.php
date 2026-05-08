@@ -63,17 +63,36 @@ class AdminController {
      * Add product
      */
     private function addProduct() {
-        $this->productModel->title = htmlspecialchars($_POST['title'] ?? '');
-        $this->productModel->description = $_POST['description'] ?? '';
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+
+        if ($title === '' || $description === '') {
+            $_SESSION['error'] = 'Product title and description are required.';
+            header('Location: ?page=admin&action=manageProducts&task=add');
+            exit;
+        }
+
+        $this->productModel->title = htmlspecialchars($title);
+        $this->productModel->description = $description;
         $this->productModel->created_by = $_SESSION['user_id'];
 
         // Handle file uploads
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-            $this->productModel->image = $this->uploadFile($_FILES['image']);
+            $image = $this->uploadFile($_FILES['image']);
+            if ($image === false) {
+                header('Location: ?page=admin&action=manageProducts&task=add');
+                exit;
+            }
+            $this->productModel->image = $image;
         }
 
         if (isset($_FILES['pdf']) && $_FILES['pdf']['size'] > 0) {
-            $this->productModel->pdf = $this->uploadFile($_FILES['pdf']);
+            $pdf = $this->uploadFile($_FILES['pdf']);
+            if ($pdf === false) {
+                header('Location: ?page=admin&action=manageProducts&task=add');
+                exit;
+            }
+            $this->productModel->pdf = $pdf;
         }
 
         if ($this->productModel->create()) {
@@ -91,18 +110,37 @@ class AdminController {
      */
     private function updateProduct($id) {
         $existingProduct = $this->productModel->getById($id);
-        $this->productModel->title = htmlspecialchars($_POST['title'] ?? '');
-        $this->productModel->description = $_POST['description'] ?? '';
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+
+        if ($title === '' || $description === '') {
+            $_SESSION['error'] = 'Product title and description are required.';
+            header('Location: ?page=admin&action=manageProducts&task=edit&id=' . $id);
+            exit;
+        }
+
+        $this->productModel->title = htmlspecialchars($title);
+        $this->productModel->description = $description;
         $this->productModel->image = $existingProduct['image'] ?? null;
         $this->productModel->pdf = $existingProduct['pdf'] ?? null;
 
         // Handle file uploads
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-            $this->productModel->image = $this->uploadFile($_FILES['image']);
+            $image = $this->uploadFile($_FILES['image']);
+            if ($image === false) {
+                header('Location: ?page=admin&action=manageProducts&task=edit&id=' . $id);
+                exit;
+            }
+            $this->productModel->image = $image;
         }
 
         if (isset($_FILES['pdf']) && $_FILES['pdf']['size'] > 0) {
-            $this->productModel->pdf = $this->uploadFile($_FILES['pdf']);
+            $pdf = $this->uploadFile($_FILES['pdf']);
+            if ($pdf === false) {
+                header('Location: ?page=admin&action=manageProducts&task=edit&id=' . $id);
+                exit;
+            }
+            $this->productModel->pdf = $pdf;
         }
 
         if ($this->productModel->update($id)) {
@@ -156,12 +194,26 @@ class AdminController {
      * Add news
      */
     private function addNews() {
-        $this->newsModel->title = htmlspecialchars($_POST['title'] ?? '');
-        $this->newsModel->content = $_POST['content'] ?? '';
+        $title = trim($_POST['title'] ?? '');
+        $content = trim($_POST['content'] ?? '');
+
+        if ($title === '' || $content === '') {
+            $_SESSION['error'] = 'News title and content are required.';
+            header('Location: ?page=admin&action=manageNews&task=add');
+            exit;
+        }
+
+        $this->newsModel->title = htmlspecialchars($title);
+        $this->newsModel->content = $content;
         $this->newsModel->created_by = $_SESSION['user_id'];
 
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-            $this->newsModel->image = $this->uploadFile($_FILES['image']);
+            $image = $this->uploadFile($_FILES['image']);
+            if ($image === false) {
+                header('Location: ?page=admin&action=manageNews&task=add');
+                exit;
+            }
+            $this->newsModel->image = $image;
         }
 
         if ($this->newsModel->create()) {
@@ -179,12 +231,26 @@ class AdminController {
      */
     private function updateNews($id) {
         $existingNews = $this->newsModel->getById($id);
-        $this->newsModel->title = htmlspecialchars($_POST['title'] ?? '');
-        $this->newsModel->content = $_POST['content'] ?? '';
+        $title = trim($_POST['title'] ?? '');
+        $content = trim($_POST['content'] ?? '');
+
+        if ($title === '' || $content === '') {
+            $_SESSION['error'] = 'News title and content are required.';
+            header('Location: ?page=admin&action=manageNews&task=edit&id=' . $id);
+            exit;
+        }
+
+        $this->newsModel->title = htmlspecialchars($title);
+        $this->newsModel->content = $content;
         $this->newsModel->image = $existingNews['image'] ?? null;
 
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-            $this->newsModel->image = $this->uploadFile($_FILES['image']);
+            $image = $this->uploadFile($_FILES['image']);
+            if ($image === false) {
+                header('Location: ?page=admin&action=manageNews&task=edit&id=' . $id);
+                exit;
+            }
+            $this->newsModel->image = $image;
         }
 
         if ($this->newsModel->update($id)) {
@@ -238,8 +304,17 @@ class AdminController {
      * Add page
      */
     private function addPage() {
-        $this->pageModel->title = htmlspecialchars($_POST['title'] ?? '');
-        $this->pageModel->content = $_POST['content'] ?? '';
+        $title = trim($_POST['title'] ?? '');
+        $content = trim($_POST['content'] ?? '');
+
+        if ($title === '' || $content === '') {
+            $_SESSION['error'] = 'Page title and content are required.';
+            header('Location: ?page=admin&action=managePages&task=add');
+            exit;
+        }
+
+        $this->pageModel->title = htmlspecialchars($title);
+        $this->pageModel->content = $content;
         $this->pageModel->created_by = $_SESSION['user_id'];
 
         if ($this->pageModel->create()) {
@@ -256,8 +331,17 @@ class AdminController {
      * Update page
      */
     private function updatePage($id) {
-        $this->pageModel->title = htmlspecialchars($_POST['title'] ?? '');
-        $this->pageModel->content = $_POST['content'] ?? '';
+        $title = trim($_POST['title'] ?? '');
+        $content = trim($_POST['content'] ?? '');
+
+        if ($title === '' || $content === '') {
+            $_SESSION['error'] = 'Page title and content are required.';
+            header('Location: ?page=admin&action=managePages&task=edit&id=' . $id);
+            exit;
+        }
+
+        $this->pageModel->title = htmlspecialchars($title);
+        $this->pageModel->content = $content;
 
         if ($this->pageModel->update($id)) {
             $_SESSION['success'] = 'Page updated successfully!';
@@ -333,10 +417,27 @@ class AdminController {
      * Add new user
      */
     private function addUser() {
-        $this->userModel->name = htmlspecialchars($_POST['name'] ?? '');
-        $this->userModel->email = htmlspecialchars($_POST['email'] ?? '');
-        $this->userModel->password = $_POST['password'] ?? '';
-        $this->userModel->role = $_POST['role'] ?? 'user';
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $role = $_POST['role'] ?? 'user';
+
+        if ($name === '' || $email === '' || $password === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = 'Please enter a valid name, email, and password.';
+            header('Location: ?page=admin&action=manageUsers&task=add');
+            exit;
+        }
+
+        if (strlen($password) < 6) {
+            $_SESSION['error'] = 'Password must be at least 6 characters long.';
+            header('Location: ?page=admin&action=manageUsers&task=add');
+            exit;
+        }
+
+        $this->userModel->name = htmlspecialchars($name);
+        $this->userModel->email = htmlspecialchars($email);
+        $this->userModel->password = $password;
+        $this->userModel->role = $role;
 
         if ($this->userModel->create()) {
             $_SESSION['success'] = 'User added successfully';
@@ -351,9 +452,19 @@ class AdminController {
      * Update user
      */
     private function updateUser($id) {
-        $this->userModel->name = htmlspecialchars($_POST['name'] ?? '');
-        $this->userModel->email = htmlspecialchars($_POST['email'] ?? '');
-        $this->userModel->role = $_POST['role'] ?? 'user';
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $role = $_POST['role'] ?? 'user';
+
+        if ($name === '' || $email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = 'Please enter a valid name and email.';
+            header('Location: ?page=admin&action=manageUsers&task=edit&id=' . $id);
+            exit;
+        }
+
+        $this->userModel->name = htmlspecialchars($name);
+        $this->userModel->email = htmlspecialchars($email);
+        $this->userModel->role = $role;
 
         if ($this->userModel->update($id)) {
             $_SESSION['success'] = 'User updated successfully';
@@ -388,18 +499,53 @@ class AdminController {
      * Upload file
      */
     private function uploadFile($file) {
+        if (!isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
+            $_SESSION['error'] = 'There was a problem uploading the file. Please try again.';
+            return false;
+        }
+
+        $allowedMime = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'pdf' => 'application/pdf'
+        ];
+
         $uploadDir = 'public/uploads/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
-        $fileName = uniqid() . '_' . basename($file['name']);
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $baseName = pathinfo($file['name'], PATHINFO_FILENAME);
+        $cleanName = preg_replace('/[^A-Za-z0-9_-]/', '_', $baseName);
+        $fileName = uniqid() . '_' . $cleanName . '.' . $ext;
         $uploadFile = $uploadDir . $fileName;
+        $mime = mime_content_type($file['tmp_name']);
+
+        if (!array_key_exists($ext, $allowedMime)) {
+            $_SESSION['error'] = 'Invalid file format. Only JPG, PNG, GIF, and PDF files are allowed.';
+            return false;
+        }
+
+        if ($mime !== $allowedMime[$ext]) {
+            if (!($ext === 'jpg' && $mime === 'image/jpeg')) {
+                $_SESSION['error'] = 'Invalid file type. Please upload an image or PDF file.';
+                return false;
+            }
+        }
+
+        if ($file['size'] > 5 * 1024 * 1024) {
+            $_SESSION['error'] = 'Upload failed. Files must be smaller than 5MB.';
+            return false;
+        }
 
         if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
             return $fileName;
         }
 
-        return null;
+        $_SESSION['error'] = 'Failed to save uploaded file.';
+        return false;
     }
 }

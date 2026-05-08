@@ -14,7 +14,7 @@ include 'app/views/layout/header.php';
             <p class="product-creator">Created by: <?php echo htmlspecialchars($product['creator_name']); ?></p>
             
             <div class="product-description">
-                <?php echo $product['description']; ?>
+                <?php echo nl2br(htmlspecialchars($product['description'])); ?>
             </div>
 
             <?php if ($product['pdf']): ?>

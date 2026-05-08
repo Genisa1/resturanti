@@ -29,25 +29,25 @@ include 'app/views/layout/header.php';
         <?php if ($task === 'add'): ?>
             <div class="form-section">
                 <h2>Add New User</h2>
-                <form method="POST" class="admin-form">
+                <form method="POST" class="admin-form needs-validation" novalidate>
                     <div class="form-group">
                         <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" class="form-control" required>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" class="form-control" required>
                     </div>
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required minlength="6">
+                        <input type="password" id="password" name="password" class="form-control" required minlength="6">
                     </div>
 
                     <div class="form-group">
                         <label for="role">Role</label>
-                        <select id="role" name="role" required>
+                        <select id="role" name="role" class="form-select" required>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
@@ -64,20 +64,20 @@ include 'app/views/layout/header.php';
             <?php if ($user): ?>
                 <div class="form-section">
                     <h2>Edit User</h2>
-                    <form method="POST" class="admin-form">
+                    <form method="POST" class="admin-form needs-validation" novalidate>
                         <div class="form-group">
                             <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" required>
+                            <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" required>
                         </div>
 
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                            <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" required>
                         </div>
 
                         <div class="form-group">
                             <label for="role">Role</label>
-                            <select id="role" name="role" required>
+                            <select id="role" name="role" class="form-select" required>
                                 <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
                                 <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                             </select>

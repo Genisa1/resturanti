@@ -29,30 +29,30 @@ include 'app/views/layout/header.php';
                 <h2><?php echo $task === 'add' ? 'Create New Page' : 'Edit Page'; ?></h2>
                 
                 <?php if ($task === 'add'): ?>
-                    <form method="POST">
+                    <form method="POST" class="needs-validation" novalidate>
                         <div class="form-group">
                             <label for="title">Title *</label>
-                            <input type="text" id="title" name="title" required>
+                            <input type="text" id="title" name="title" class="form-control" required>
                         </div>
 
                         <div class="form-group">
                             <label for="content">Content *</label>
-                            <textarea id="content" name="content" rows="10" required></textarea>
+                            <textarea id="content" name="content" class="form-control" rows="10" required></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save Page</button>
                         <a href="?page=admin&action=managePages" class="btn">Cancel</a>
                     </form>
                 <?php elseif ($task === 'edit' && isset($pageItem) && $pageItem): ?>
-                    <form method="POST">
+                    <form method="POST" class="needs-validation" novalidate>
                         <div class="form-group">
                             <label for="title">Title *</label>
-                            <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($pageItem['title']); ?>" required>
+                            <input type="text" id="title" name="title" class="form-control" value="<?php echo htmlspecialchars($pageItem['title']); ?>" required>
                         </div>
 
                         <div class="form-group">
                             <label for="content">Content *</label>
-                            <textarea id="content" name="content" rows="10" required><?php echo htmlspecialchars($pageItem['content']); ?></textarea>
+                            <textarea id="content" name="content" class="form-control" rows="10" required><?php echo htmlspecialchars($pageItem['content']); ?></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save Page</button>

@@ -29,20 +29,20 @@ include 'app/views/layout/header.php';
                 <h2><?php echo $task === 'add' ? 'Add New Product' : 'Edit Product'; ?></h2>
                 
                 <?php if ($task === 'add'): ?>
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                         <div class="form-group">
                             <label for="title">Title *</label>
-                            <input type="text" id="title" name="title" required>
+                            <input type="text" id="title" name="title" class="form-control" required>
                         </div>
 
                         <div class="form-group">
                             <label for="description">Description *</label>
-                            <textarea id="description" name="description" rows="8" required></textarea>
+                            <textarea id="description" name="description" class="form-control" rows="8" required></textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="image">Image</label>
-                            <input type="file" id="image" name="image" accept="image/*">
+                            <input type="file" id="image" name="image" class="form-control" accept="image/*">
                         </div>
 
                         <div class="form-group">
@@ -54,20 +54,20 @@ include 'app/views/layout/header.php';
                         <a href="?page=admin&action=manageProducts" class="btn">Cancel</a>
                     </form>
                 <?php elseif ($task === 'edit' && isset($product) && $product): ?>
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                         <div class="form-group">
                             <label for="title">Title *</label>
-                            <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
+                            <input type="text" id="title" name="title" class="form-control" value="<?php echo htmlspecialchars($product['title']); ?>" required>
                         </div>
 
                         <div class="form-group">
                             <label for="description">Description *</label>
-                            <textarea id="description" name="description" rows="8" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+                            <textarea id="description" name="description" class="form-control" rows="8" required><?php echo htmlspecialchars($product['description']); ?></textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="image">Image</label>
-                            <input type="file" id="image" name="image" accept="image/*">
+                            <input type="file" id="image" name="image" class="form-control" accept="image/*">
                             <?php if (!empty($product['image'])): ?>
                                 <p>Current file: <?php echo htmlspecialchars($product['image']); ?></p>
                             <?php endif; ?>
@@ -75,7 +75,7 @@ include 'app/views/layout/header.php';
 
                         <div class="form-group">
                             <label for="pdf">PDF</label>
-                            <input type="file" id="pdf" name="pdf" accept=".pdf">
+                            <input type="file" id="pdf" name="pdf" class="form-control" accept=".pdf">
                             <?php if (!empty($product['pdf'])): ?>
                                 <p>Current file: <?php echo htmlspecialchars($product['pdf']); ?></p>
                             <?php endif; ?>

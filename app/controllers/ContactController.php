@@ -22,19 +22,34 @@ class ContactController {
      */
     public function submit() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->contactModel->name = htmlspecialchars($_POST['name'] ?? '');
-            $this->contactModel->email = htmlspecialchars($_POST['email'] ?? '');
-            $this->contactModel->message = htmlspecialchars($_POST['message'] ?? '');
+            $name = trim($_POST['name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $message = trim($_POST['message'] ?? '');
 
-            if ($this->contactModel->create()) {
-                $_SESSION['success'] = 'Thank you! We will get back to you soon.';
-                header('Location: ?page=contact');
-                exit;
-            } else {
-                $_SESSION['error'] = 'Error submitting form. Please try again.';
+            if ($name === '' || $email === '' || $message === '') {
+                $_SESSION['error'] = 'Please fill in all required fields.';
                 header('Location: ?page=contact');
                 exit;
             }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['error'] = 'Please provide a valid email address.';
+                header('Location: ?page=contact');
+                exit;
+            }
+
+            $this->contactModel->name = htmlspecialchars($name);
+            $this->contactModel->email = htmlspecialchars($email);
+            $this->contactModel->message = htmlspecialchars($message);
+
+            if ($this->contactModel->create()) {
+                $_SESSION['success'] = 'Thank you! We will get back to you soon.';
+            } else {
+                $_SESSION['error'] = 'Error submitting form. Please try again.';
+            }
+
+            header('Location: ?page=contact');
+            exit;
         }
     }
 }

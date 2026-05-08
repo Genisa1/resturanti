@@ -7,20 +7,23 @@ include 'app/views/layout/header.php';
     <h1>Contact Us</h1>
     
     <div class="contact-wrapper">
-        <form class="contact-form" method="POST" action="?page=contact&action=submit">
+        <form class="contact-form needs-validation" method="POST" action="?page=contact&action=submit" novalidate>
             <div class="form-group">
                 <label for="name">Name *</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" class="form-control" required>
+                <div class="invalid-feedback">Please enter your name.</div>
             </div>
 
             <div class="form-group">
                 <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" class="form-control" required>
+                <div class="invalid-feedback">Please enter a valid email address.</div>
             </div>
 
             <div class="form-group">
                 <label for="message">Message *</label>
-                <textarea id="message" name="message" rows="8" required></textarea>
+                <textarea id="message" name="message" rows="8" class="form-control" required></textarea>
+                <div class="invalid-feedback">Please enter a message.</div>
             </div>
 
             <button type="submit" class="btn btn-primary">Send Message</button>

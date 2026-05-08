@@ -3,6 +3,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize tooltips, modals, and other interactive elements
     initializeElements();
+    initForms();
+    initSwiper();
 });
 
 /**
@@ -29,6 +31,49 @@ function initializeElements() {
                 }
             });
         }
+    });
+}
+
+/**
+ * Initialize form validation for HTML5 forms
+ */
+function initForms() {
+    const forms = document.querySelectorAll('.needs-validation');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+            }
+        }, false);
+    });
+}
+
+/**
+ * Initialize Swiper slider if available
+ */
+function initSwiper() {
+    if (typeof Swiper === 'undefined') {
+        return;
+    }
+
+    new Swiper('.mySwiper', {
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 20,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        autoplay: {
+            delay: 4500,
+            disableOnInteraction: false,
+        },
     });
 }
 

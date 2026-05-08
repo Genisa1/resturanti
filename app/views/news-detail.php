@@ -18,7 +18,7 @@ include 'app/views/layout/header.php';
             <?php endif; ?>
             
             <div class="news-content">
-                <?php echo $newsItem['content']; ?>
+                <?php echo nl2br(htmlspecialchars($newsItem['content'])); ?>
             </div>
 
             <a href="?page=news" class="btn">Back to News</a>
